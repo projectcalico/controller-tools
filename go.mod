@@ -1,4 +1,4 @@
-module sigs.k8s.io/controller-tools
+module github.com/caseydavenport/controller-tools
 
 go 1.13
 
