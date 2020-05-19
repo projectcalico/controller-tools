@@ -409,6 +409,11 @@ func builtinToType(basic *types.Basic) (typ string, format string, err error) {
 		typ = "string"
 	case basicInfo&types.IsInteger != 0:
 		typ = "integer"
+	case basicInfo&types.IsFloat != 0:
+		// TODO: This is a hack! Calico uses floats for its order fields in NP.
+		// This is just to get the CRD generation working while we try to sort out
+		// how to move off of floats longer term.
+		typ = "float"
 	default:
 		// NB(directxman12): floats are *NOT* allowed in kubernetes APIs
 		return "", "", fmt.Errorf("unsupported type %q", basic.String())
