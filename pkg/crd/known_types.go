@@ -52,6 +52,34 @@ var KnownPackages = map[string]PackageOverride{
 		p.AddPackage(pkg) // get the rest of the types
 	},
 
+	"github.com/projectcalico/libcalico-go/lib/numorstring": func(p *Parser, pkg *loader.Package) {
+		p.Schemata[TypeIdent{Name: "NumOrString", Package: pkg}] = apiext.JSONSchemaProps{
+			XIntOrString: true,
+			AnyOf: []apiext.JSONSchemaProps{
+				{Type: "integer"},
+				{Type: "string"},
+			},
+			Pattern: "^.*",
+		}
+		p.Schemata[TypeIdent{Name: "Protocol", Package: pkg}] = apiext.JSONSchemaProps{
+			XIntOrString: true,
+			AnyOf: []apiext.JSONSchemaProps{
+				{Type: "integer"},
+				{Type: "string"},
+			},
+			Pattern: "^.*",
+		}
+		p.Schemata[TypeIdent{Name: "Port", Package: pkg}] = apiext.JSONSchemaProps{
+			XIntOrString: true,
+			AnyOf: []apiext.JSONSchemaProps{
+				{Type: "integer"},
+				{Type: "string"},
+			},
+			Pattern: "^.*",
+		}
+		p.AddPackage(pkg) // get the rest of the types
+	},
+
 	"k8s.io/apimachinery/pkg/api/resource": func(p *Parser, pkg *loader.Package) {
 		p.Schemata[TypeIdent{Name: "Quantity", Package: pkg}] = apiext.JSONSchemaProps{
 			// TODO(directxman12): regexp validation for this (or get kube to support it as a format value)

@@ -106,7 +106,7 @@ func (c *schemaContext) requestSchema(pkgPath, typeName string) {
 // infoToSchema creates a schema for the type in the given set of type information.
 func infoToSchema(ctx *schemaContext) *apiext.JSONSchemaProps {
 	if obj := ctx.pkg.Types.Scope().Lookup(ctx.info.Name); obj != nil && implementsJSONMarshaler(obj.Type()) {
-		schema := &apiext.JSONSchemaProps{Type: "Any"}
+		schema := &apiext.JSONSchemaProps{Type: "string"}
 		applyMarkers(ctx, ctx.info.Markers, schema, ctx.info.RawSpec.Type)
 		return schema
 	}
@@ -413,7 +413,7 @@ func builtinToType(basic *types.Basic) (typ string, format string, err error) {
 		// TODO: This is a hack! Calico uses floats for its order fields in NP.
 		// This is just to get the CRD generation working while we try to sort out
 		// how to move off of floats longer term.
-		typ = "float"
+		typ = "number"
 	default:
 		// NB(directxman12): floats are *NOT* allowed in kubernetes APIs
 		return "", "", fmt.Errorf("unsupported type %q", basic.String())
