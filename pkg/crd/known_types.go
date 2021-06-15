@@ -21,6 +21,35 @@ import (
 	"sigs.k8s.io/controller-tools/pkg/loader"
 )
 
+// Custom logic for numOrString types.
+var numOrString = func(p *Parser, pkg *loader.Package) {
+	p.Schemata[TypeIdent{Name: "NumOrString", Package: pkg}] = apiext.JSONSchemaProps{
+		XIntOrString: true,
+		AnyOf: []apiext.JSONSchemaProps{
+			{Type: "integer"},
+			{Type: "string"},
+		},
+		Pattern: "^.*",
+	}
+	p.Schemata[TypeIdent{Name: "Protocol", Package: pkg}] = apiext.JSONSchemaProps{
+		XIntOrString: true,
+		AnyOf: []apiext.JSONSchemaProps{
+			{Type: "integer"},
+			{Type: "string"},
+		},
+		Pattern: "^.*",
+	}
+	p.Schemata[TypeIdent{Name: "Port", Package: pkg}] = apiext.JSONSchemaProps{
+		XIntOrString: true,
+		AnyOf: []apiext.JSONSchemaProps{
+			{Type: "integer"},
+			{Type: "string"},
+		},
+		Pattern: "^.*",
+	}
+	p.AddPackage(pkg) // get the rest of the types
+}
+
 // KnownPackages overrides types in some comment packages that have custom validation
 // but don't have validation markers on them (since they're from core Kubernetes).
 var KnownPackages = map[string]PackageOverride{
@@ -52,33 +81,10 @@ var KnownPackages = map[string]PackageOverride{
 		p.AddPackage(pkg) // get the rest of the types
 	},
 
-	"github.com/projectcalico/libcalico-go/lib/numorstring": func(p *Parser, pkg *loader.Package) {
-		p.Schemata[TypeIdent{Name: "NumOrString", Package: pkg}] = apiext.JSONSchemaProps{
-			XIntOrString: true,
-			AnyOf: []apiext.JSONSchemaProps{
-				{Type: "integer"},
-				{Type: "string"},
-			},
-			Pattern: "^.*",
-		}
-		p.Schemata[TypeIdent{Name: "Protocol", Package: pkg}] = apiext.JSONSchemaProps{
-			XIntOrString: true,
-			AnyOf: []apiext.JSONSchemaProps{
-				{Type: "integer"},
-				{Type: "string"},
-			},
-			Pattern: "^.*",
-		}
-		p.Schemata[TypeIdent{Name: "Port", Package: pkg}] = apiext.JSONSchemaProps{
-			XIntOrString: true,
-			AnyOf: []apiext.JSONSchemaProps{
-				{Type: "integer"},
-				{Type: "string"},
-			},
-			Pattern: "^.*",
-		}
-		p.AddPackage(pkg) // get the rest of the types
-	},
+	// numorstring could come from two different places. It was moved to the api repository
+	// around the time of Calico v3.20.
+	"github.com/projectcalico/libcalico-go/lib/numorstring": numOrString,
+	"github.com/projectcalico/api/pkg/lib/numorstring":      numOrString,
 
 	"k8s.io/apimachinery/pkg/api/resource": func(p *Parser, pkg *loader.Package) {
 		p.Schemata[TypeIdent{Name: "Quantity", Package: pkg}] = apiext.JSONSchemaProps{
