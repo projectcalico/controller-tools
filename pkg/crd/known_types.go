@@ -81,10 +81,11 @@ var KnownPackages = map[string]PackageOverride{
 		p.AddPackage(pkg) // get the rest of the types
 	},
 
-	// numorstring could come from two different places. It was moved to the api repository
+	// numorstring could come from different places. It was moved to the api repository
 	// around the time of Calico v3.20.
 	"github.com/projectcalico/libcalico-go/lib/numorstring": numOrString,
 	"github.com/projectcalico/api/pkg/lib/numorstring":      numOrString,
+	"github.com/tigera/api/pkg/lib/numorstring":             numOrString,
 
 	"k8s.io/apimachinery/pkg/api/resource": func(p *Parser, pkg *loader.Package) {
 		p.Schemata[TypeIdent{Name: "Quantity", Package: pkg}] = apiext.JSONSchemaProps{
